@@ -13,18 +13,18 @@ type model struct {
 	selected map[int]struct{}
 }
 
-func initialize() (tea.Model, tea.Cmd) {
-	m := model{
-		choices:  []string{"multi-cloud", "single-cloud", "elastic-cloud", "elastic-on-prem"},
-		selected: make(map[int]struct{}),
-	}
-	return m, nil
+var initialModel = model{
+	choices:  []string{"multi-cloud", "single-cloud", "elastic-cloud", "elastic-on-prem"},
+	selected: make(map[int]struct{}),
 }
 
-func update(msg tea.Msg, mdl tea.Model) (tea.Model, tea.Cmd) {
-	m, _ := mdl.(model)
+func (m model) Init() tea.Cmd {
+	return nil
+}
+
+func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tead.KeyMsg:
+	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
@@ -48,9 +48,8 @@ func update(msg tea.Msg, mdl tea.Model) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func view(mdl tea.Model) string {
-	m, _ := mdl.(model)
-	s := "Choose your cloud strategy."
+func (m model) View() string {
+	s := "Choose your cloud strategy.nn"
 	for i, choice := range m.choices {
 		cursor := " "
 		if m.cursor == i {
@@ -67,10 +66,10 @@ func view(mdl tea.Model) string {
 	return s
 }
 
-func ain() {
-	p := tea.NewProgram(initialize, update, view)
+func main() {
+	p := tea.NewProgram(initialModel)
 	if err := p.Start(); err != nil {
-		fmt.Printf("Alas, thereś been an error: %v", err)
+		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}
 }
